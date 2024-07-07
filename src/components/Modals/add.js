@@ -3,7 +3,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { AlertBasic } from "../Alert/index.js";
 import "./Modal.css";
 import { api } from "../../services/api.js";
-import getTimeDelivery from "../../functions/getTimeDelivery.js";
+import { getTimeDelivery } from "../../functions/getTimeDelivery.js";
 
 function Add(props) {
   const [data, setData] = useState({
@@ -19,45 +19,28 @@ function Add(props) {
       ...data,
       [name]: value,
     });
-    console.log(data);
   };
 
   const addOrder = async () => {
-    debugger;
-
+    if (!checkedOriginAndDestination()) return;
     const response = await api.get(
-      "json?destination=uberlandia&origin=araguari&key=AIzaSyCjEcdO5wZV5RCWtPbRFYgWeTGs_sDB4ZQ",
-      {
-        method: "GET",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          'Origin': 'http://localhost:3000/'
-        },
-      }
+      `json?destination=${data.destination}, Uberlandia-mg&origin=${data.origin}, Uberlandia-mg&key=AIzaSyCjEcdO5wZV5RCWtPbRFYgWeTGs_sDB4ZQ`
     );
-    const time = 0;
-    if (response.status === "OK") {
-      time = response.routes[0].legs.duration.value;
+    let time = 0;
+    if (response.status === 200) {
+      time = response.data.routes[0].legs[0].duration.value;
+    } else {
+      AlertBasic(
+        "Atenção",
+        "Por favor, verifique o endereço da rota esta correto, não foi possível localizar.",
+        "error"
+      );
+      return;
     }
-    // const { requestOrder, deliveryOrder, deliveryTime } = getTimeDelivery();
-    // const id =
-    //   Number(props.data.length) > 0
-    //     ? props.data[props.data.length - 1].id + 1
-    //     : 1;
-    // let obj = {
-    //   id: id,
-    //   name: data.name,
-    //   description: data.description,
-    //   origin: data.origin,
-    //   destination: data.destination,
-    //   requestOrder: requestOrder,
-    //   deliveryOrder: deliveryOrder,
-    //   deliveryTime: deliveryTime,
-    //   status: "Em Andamento",
-    // };
-    // if (!checkInput(obj)) return;
-    // props.funcUpdate(obj);
-    // clear();
+    const obj = await buildObj(time);
+    if (!checkInput(obj)) return;
+    props.funcUpdate(obj);
+    clear();
   };
 
   const clear = () => {
@@ -79,6 +62,37 @@ function Add(props) {
         );
         return false;
       }
+    }
+    return true;
+  };
+
+  const buildObj = (time) => {
+    const { requestOrder, deliveryOrder, deliveryTime } = getTimeDelivery(time);
+    const id =
+      Number(props.data.length) > 0
+        ? props.data[props.data.length - 1].id + 1
+        : 1;
+    return {
+      id: id,
+      name: data.name,
+      description: data.description,
+      origin: data.origin,
+      destination: data.destination,
+      requestOrder: requestOrder,
+      deliveryOrder: deliveryOrder,
+      deliveryTime: deliveryTime,
+      status: "Em Andamento",
+    };
+  };
+
+  const checkedOriginAndDestination = () => {
+    if (data.origin === "" || data.destination === "") {
+      AlertBasic(
+        "Atenção",
+        "Por favor, preencher origem e destino de entrega.",
+        "error"
+      );
+      return false;
     }
     return true;
   };
@@ -117,7 +131,7 @@ function Add(props) {
               </select>
             </div>
             <div class="form-group col-sm-12">
-              <label>Origem:</label>
+              <label>End. Origem:</label>
               <input
                 type="text"
                 className="form-control"
@@ -126,7 +140,7 @@ function Add(props) {
               />
             </div>
             <div class="form-group col-sm-12">
-              <label>Destino:</label>
+              <label>End. Destino:</label>
               <input
                 type="text"
                 className="form-control"

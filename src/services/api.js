@@ -1,12 +1,13 @@
 import axios from "axios";
 
+const proxyUrl = "https://cors-anywhere.herokuapp.com/";
+
 const linkApi = {
-  link: "https://maps.googleapis.com/maps/api/directions",
+  link: proxyUrl + "https://maps.googleapis.com/maps/api/directions",
 };
 
 const api = axios.create({
   baseURL: linkApi.link,
-  credentials: true,
 });
 
 export { linkApi, api };
