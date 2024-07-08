@@ -72,26 +72,30 @@ export { linkApi, api };
 </ul>
 
 <h4>Logica de atualização do tempo de entrega</h4>
+<p>Tempo de atualização é de 30 em 30 segundos;</p>
 
 ```
   const updateTimeDelivery = () => {
-    if (data.length > 0) {
-      let arrayUpdateTime = [];
-      data.forEach((item) => {
-        if (item.status === "Em Andamento") {
-          item.deliveryTime = calculeTimeDelivery(item.deliveryOrder);
-        } else {
-          item.deliveryTime = "00 minutos";
-        }
-        arrayUpdateTime.push(item);
-      });
-      setData(arrayUpdateTime);
+    const amountOrder = document.getElementsByClassName("order").length;
+    if (data.length === amountOrder) {
+      if (data.length > 0) {
+        let arrayUpdateTime = [];
+        data.forEach((item) => {
+          if (item.status === "Em Andamento") {
+            item.deliveryTime = calculeTimeDelivery(item.deliveryOrder);
+          } else {
+            item.deliveryTime = "00 minutos";
+          }
+          arrayUpdateTime.push(item);
+        });
+        setData(arrayUpdateTime);
+      }
     }
   };
 
   setTimeout(async () => {
     updateTimeDelivery();
-  }, 60000);
+  }, 30000);
 ```
 
 
