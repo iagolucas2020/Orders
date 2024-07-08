@@ -7,7 +7,7 @@ export const Card = ({ arrayObj, cancelOrder, finishOrder }) => {
       <div className="form-group">
         <div className="row">
           {arrayObj.map((obj) => (
-              <div class="card" style={{ width: "18rem" }}>
+              <div key={obj.id} class="card order" style={{ width: "18rem" }}>
                 <div class="card-body">
                   <h5 class="card-title">
                     {obj.id}: {obj.name}

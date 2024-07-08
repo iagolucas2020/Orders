@@ -9,6 +9,7 @@
     font-size: 1.05rem;
     align-items: center;
     justify-content: space-between;
+    position: relative;
 }
 
 .header nav {

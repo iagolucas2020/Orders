@@ -3,20 +3,19 @@ import { FcCancel } from "react-icons/fc";
 import { IoIosSend } from "react-icons/io";
 
 export const Table = ({ headerTable, arrayObj, cancelOrder, finishOrder }) => {
-  console.log(headerTable);
   return (
     <>
       <table className="table table-bordered table-striped table-hover">
         <thead>
           <tr>
-            {headerTable.map((item) => (
-              <th>{item}</th>
+            {headerTable.map((item, index) => (
+              <th key={index}>{item}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {arrayObj.map((obj) => (
-            <tr key={obj.id}>
+            <tr key={obj.id} className="order">
               <td>{obj.id}</td>
               <td>{obj.name}</td>
               <td>{obj.description}</td>

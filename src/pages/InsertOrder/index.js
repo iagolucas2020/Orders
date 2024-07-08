@@ -63,23 +63,26 @@ function InsertOrder() {
   };
 
   const updateTimeDelivery = () => {
-    if (data.length > 0) {
-      let arrayUpdateTime = [];
-      data.forEach((item) => {
-        if (item.status === "Em Andamento") {
-          item.deliveryTime = calculeTimeDelivery(item.deliveryOrder);
-        } else {
-          item.deliveryTime = "00 minutos";
-        }
-        arrayUpdateTime.push(item);
-      });
-      setData(arrayUpdateTime);
+    const amountOrder = document.getElementsByClassName("order").length;
+    if (data.length === amountOrder) {
+      if (data.length > 0) {
+        let arrayUpdateTime = [];
+        data.forEach((item) => {
+          if (item.status === "Em Andamento") {
+            item.deliveryTime = calculeTimeDelivery(item.deliveryOrder);
+          } else {
+            item.deliveryTime = "00 minutos";
+          }
+          arrayUpdateTime.push(item);
+        });
+        setData(arrayUpdateTime);
+      }
     }
   };
 
   setTimeout(async () => {
     updateTimeDelivery();
-  }, 60000);
+  }, 30000);
 
   const headerTable = [
     "Id",

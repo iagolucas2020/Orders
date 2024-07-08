@@ -5,6 +5,8 @@ import "./Modal.css";
 import { getTimeDelivery } from "../../functionsUseful/getTimeDelivery.js";
 import { GetMaps } from "../../services/queryMaps.js";
 import { calculeTimeDelivery } from "../../functionsUseful/calculeTimeDelivery.js";
+import { ModuleSimple } from "../Fields/modules/moduleSimple.js";
+import { ModuleSelect } from "../Fields/modules/moduleSelect.js";
 
 function Add(props) {
   const [data, setData] = useState({
@@ -26,7 +28,10 @@ function Add(props) {
 
   const addOrder = async () => {
     if (!checkedOriginAndDestination()) return;
-    const response = await GetMaps(data.origin, data.destination);
+    const response = await GetMaps(
+      data.origin + "," + data.cidadeOrigin,
+      data.destination + "," + data.cidadeDestination
+    );
     let time = 0;
     if (response.status === 200) {
       time = response.data.routes[0].legs[0].duration.value;
@@ -68,7 +73,6 @@ function Add(props) {
   };
 
   const buildObj = (time) => {
-    debugger;
     const { requestOrder, deliveryOrder } = getTimeDelivery(time);
     const id = lastId > 0 ? lastId + 1 : 1;
     setLastId(id);
@@ -97,57 +101,78 @@ function Add(props) {
     return true;
   };
 
+  const modules = [
+    { id: 1, type: "text", label: "Nome", name: "name", dropDown: false },
+    {
+      id: 2,
+      type: "text",
+      label: "Descrição",
+      name: "description",
+      dropDown: true,
+      options: [
+        { id: 1, name: "Selecione...", value: "" },
+        { id: 2, name: "Humburger", value: "Humburger" },
+        { id: 3, name: "Hamburger Duplo", value: "Hamburger Duplo" },
+        { id: 4, name: "Hamburger Acebolado", value: "Hamburger Acebolado" },
+        { id: 5, name: "Hamburger com Batata", value: "Hamburger com Batata" },
+      ],
+    },
+    {
+      id: 3,
+      type: "text",
+      label: "Logradouro (origem)",
+      name: "origin",
+      dropDown: false,
+    },
+    {
+      id: 4,
+      type: "text",
+      label: "Cidade (origem)",
+      name: "cidadeOrigin",
+      dropDown: false,
+    },
+    {
+      id: 5,
+      type: "text",
+      label: "Logradouro (destino)",
+      name: "destination",
+      dropDown: false,
+    },
+    {
+      id: 6,
+      type: "text",
+      label: "Cidade (destino)",
+      name: "cidadeDestination",
+      dropDown: false,
+    },
+  ];
+
   return (
     <Modal isOpen={props.visible}>
       <ModalHeader className="modalHeader"> Incluir Pedido </ModalHeader>
       <ModalBody>
         <div className="form-group">
           <div className="row">
-            <div class="form-group col-sm-12">
-              <label>Nome:</label>
-              <input
-                type="text"
-                className="form-control"
-                name="name"
-                onChange={handleChange}
-              />
-            </div>
-            <div class="form-group col-sm-12">
-              <label>Descrição (lanche):</label>
-              <select
-                className="form-control"
-                name="description"
-                onChange={handleChange}
-              >
-                <option value={""}>selecione...</option>
-                <option value={"Hamburger"}>Hamburger</option>
-                <option value={"Hamburger Duplo"}>Hamburger Duplo</option>
-                <option value={"Hamburger Acebolado"}>
-                  Hamburger Acebolado
-                </option>
-                <option value={"Hamburger com Batata"}>
-                  Hamburger com Batata
-                </option>
-              </select>
-            </div>
-            <div class="form-group col-sm-12">
-              <label>End. Origem:</label>
-              <input
-                type="text"
-                className="form-control"
-                name="origin"
-                onChange={handleChange}
-              />
-            </div>
-            <div class="form-group col-sm-12">
-              <label>End. Destino:</label>
-              <input
-                type="text"
-                className="form-control"
-                name="destination"
-                onChange={handleChange}
-              />
-            </div>
+            {modules.map((item) =>
+              item.dropDown === false ? (
+                <ModuleSimple
+                  key={item.id}
+                  type={item.type}
+                  label={item.label}
+                  name={item.name}
+                  handleChange={handleChange}
+                />
+              ) : (
+                <ModuleSelect
+                  key={item.id}
+                  type={item.type}
+                  label={item.label}
+                  name={item.name}
+                  handleChange={handleChange}
+                  options={item.options}
+                />
+              )
+            )}
           </div>
         </div>
       </ModalBody>
