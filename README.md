@@ -103,11 +103,13 @@ export { linkApi, api };
 <ul>
     <li>Table que constroi as tabelas, imagem: ![compTable](https://github.com/iagolucas2020/Orders/assets/60789632/1a3fb5d1-cc46-41cf-9209-ca79d8732b1d)
 ;</li>
-    <li>Card que constroi os card, imagem: ![compCard](https://github.com/iagolucas2020/Orders/assets/60789632/edb642ad-8a6a-450b-91ab-87f43cc9df75)
+    <li>Card que constroi os cards do pedidos, imagem: ![compCard](https://github.com/iagolucas2020/Orders/assets/60789632/edb642ad-8a6a-450b-91ab-87f43cc9df75)
 </li>
-    li>Header e footer da aplicação;</li>
-    li>Card que constroi os cards;</li>
-    li>Alert da onde são gerado os avisos.</li>
+    <li>Modulo de label e input</li>
+    <li>Modulo de dropdown list</li>
+    <li>Header e footer da aplicação;</li>
+    <li>Card que constroi os cards;</li>
+    <li>Alert da onde são gerado os avisos.</li>
 </ul>
 
 
