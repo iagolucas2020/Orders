@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
 import { AlertBasic } from "../Alert/index.js";
 import "./Modal.css";
-import { api } from "../../services/api.js";
-import { getTimeDelivery } from "../../functions/getTimeDelivery.js";
+import { getTimeDelivery } from "../../functionsUseful/getTimeDelivery.js";
+import { GetMaps } from "../../services/queryMaps.js";
+import { calculeTimeDelivery } from "../../functionsUseful/calculeTimeDelivery.js";
 
 function Add(props) {
   const [data, setData] = useState({
@@ -12,6 +13,8 @@ function Add(props) {
     origin: "",
     destination: "",
   });
+
+  const [lastId, setLastId] = useState(0);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,9 +26,7 @@ function Add(props) {
 
   const addOrder = async () => {
     if (!checkedOriginAndDestination()) return;
-    const response = await api.get(
-      `json?destination=${data.destination}, Uberlandia-mg&origin=${data.origin}, Uberlandia-mg&key=AIzaSyCjEcdO5wZV5RCWtPbRFYgWeTGs_sDB4ZQ`
-    );
+    const response = await GetMaps(data.origin, data.destination);
     let time = 0;
     if (response.status === 200) {
       time = response.data.routes[0].legs[0].duration.value;
@@ -67,11 +68,10 @@ function Add(props) {
   };
 
   const buildObj = (time) => {
-    const { requestOrder, deliveryOrder, deliveryTime } = getTimeDelivery(time);
-    const id =
-      Number(props.data.length) > 0
-        ? props.data[props.data.length - 1].id + 1
-        : 1;
+    debugger;
+    const { requestOrder, deliveryOrder } = getTimeDelivery(time);
+    const id = lastId > 0 ? lastId + 1 : 1;
+    setLastId(id);
     return {
       id: id,
       name: data.name,
@@ -80,7 +80,7 @@ function Add(props) {
       destination: data.destination,
       requestOrder: requestOrder,
       deliveryOrder: deliveryOrder,
-      deliveryTime: deliveryTime,
+      deliveryTime: calculeTimeDelivery(deliveryOrder),
       status: "Em Andamento",
     };
   };

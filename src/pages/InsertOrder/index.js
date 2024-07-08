@@ -3,15 +3,15 @@ import { useState } from "react";
 import { AlertBasic, AlertConfirm } from "../../components/Alert";
 import Add from "../../components/Modals/add";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FcCancel } from "react-icons/fc";
-import { IoIosSend } from "react-icons/io";
-import { FaEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { calculeTimeDelivery } from "../../functionsUseful/calculeTimeDelivery";
+import { Table } from "../../components/Table/table";
+import { FaBorderAll, FaList } from "react-icons/fa";
+import { Card } from "../../components/Card/card";
 
 function InsertOrder() {
   const [data, setData] = useState([]);
   const [visibleModal, setVisibleModal] = useState(false);
-  const [id, setId] = useState("");
+  const [seeFormList, setSeeFormList] = useState(true);
 
   const openModal = () => {
     setVisibleModal(!visibleModal);
@@ -55,108 +55,105 @@ function InsertOrder() {
     return filterOrders;
   };
 
-  const getData = async (arrayOrders) => {
-    setData([...data, arrayOrders]);
+  const updateOrders = async (arrayOrders) => {
+    const orders = [...data, arrayOrders];
+    setData(orders);
     setVisibleModal(false);
     AlertBasic("Adicionar", "Pedido Adicionado com sucesso.", "success");
   };
 
-  const detailsOrder = (id) => {
-    <Link to={"/Details/" + id}></Link>;
+  const updateTimeDelivery = () => {
+    if (data.length > 0) {
+      let arrayUpdateTime = [];
+      data.forEach((item) => {
+        if (item.status === "Em Andamento") {
+          item.deliveryTime = calculeTimeDelivery(item.deliveryOrder);
+        } else {
+          item.deliveryTime = "00 minutos";
+        }
+        arrayUpdateTime.push(item);
+      });
+      setData(arrayUpdateTime);
+    }
   };
+
+  setTimeout(async () => {
+    //updateTimeDelivery();
+  }, 60000);
+
+  const headerTable = [
+    "Id",
+    "Nome",
+    "Descrição",
+    "Origem",
+    "Destino",
+    "Hora Pedido",
+    "Hora Entrega Pedido",
+    "Tempo Entrega (estimado)",
+    "Status",
+    "Ação",
+  ];
 
   return (
     <>
       <div className="container-sm container divContainer">
         <header>
-          <div>
-            <h2>Pedidos</h2>
+          <div className="divBtnNew">
             <button
               className="btn btn-success"
               onClick={() => {
                 openModal();
               }}
             >
-              Novo
+              Novo Pedido
             </button>
           </div>
         </header>
         <br />
-        <table className="table table-bordered table-striped table-hover">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Nome</th>
-              <th>Descrição</th>
-              <th>Origem</th>
-              <th>Destino</th>
-              <th>Hora Pedido</th>
-              <th>Entrega Pedido</th>
-              <th>Tempo Entrega</th>
-              <th>Status</th>
-              <th>Ação</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((order) => (
-              <tr key={order.id}>
-                <td>{order.id}</td>
-                <td>{order.name}</td>
-                <td>{order.description}</td>
-                <td>{order.origin}</td>
-                <td>{order.destination}</td>
-                <td>{order.requestOrder}</td>
-                <td>{order.deliveryOrder}</td>
-                <td>{order.deliveryTime}</td>
-                <td>{order.status}</td>
-                <td>
-                  {order.status !== "Cancelado" &&
-                    order.status !== "Entregue" && (
-                      <>
-                        <button
-                          title="Cancelar Pedido"
-                          className="btn"
-                          onClick={() => {
-                            cancelOrder(order.id);
-                          }}
-                        >
-                          <FcCancel />
-                        </button>
-                        <button
-                          title="Finalizar Pedido"
-                          className="btn"
-                          onClick={() => {
-                            finishOrder(order.id);
-                          }}
-                          style={{ color: "green" }}
-                        >
-                          <IoIosSend />
-                        </button>
-                      </>
-                    )}
-                  {/* <button
-                    title="Ver Detalhes Pedido"
-                    className="btn"
-                    onClick={() => {
-                      detailsOrder(order.id);
-                    }}
-                    style={{ color: "blue" }}
-                  >
-                    <FaEye />
-                  </button> */}
-                  {/* <Link to={"/Details/" + order.id}>Detalhes</Link> */}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="seeOrders">
+          <h2>Pedidos</h2>
+          <div>
+            <button
+              title="Ver em forma de lista"
+              className="btn"
+              onClick={() => {
+                setSeeFormList(true);
+              }}
+            >
+              <FaList color="white" />
+            </button>
+            <button
+              title="Ver em forma de cars"
+              className="btn"
+              onClick={() => {
+                setSeeFormList(false);
+              }}
+            >
+              <FaBorderAll color="white" />
+            </button>
+          </div>
+        </div>
+        {seeFormList ? (
+          <Table
+            headerTable={headerTable}
+            arrayObj={data}
+            cancelOrder={cancelOrder}
+            finishOrder={finishOrder}
+          />
+        ) : (
+          <Card
+            arrayObj={data}
+            cancelOrder={cancelOrder}
+            finishOrder={finishOrder}
+          />
+        )}
         <Add
           visible={visibleModal}
           func={() => {
             setVisibleModal(!visibleModal);
           }}
           funcUpdate={(arrayOrders) => {
-            getData(arrayOrders);
+            updateOrders(arrayOrders);
           }}
           data={data}
         />

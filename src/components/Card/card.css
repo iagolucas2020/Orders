@@ -1,0 +1,12 @@
+.divButtonCard {
+    display: flex;
+    justify-content: end;
+}
+
+.divButtonCard button {
+    margin-right: 5px;
+}
+
+.card {
+    margin: 10px;
+}
