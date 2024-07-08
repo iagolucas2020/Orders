@@ -78,7 +78,7 @@ function InsertOrder() {
   };
 
   setTimeout(async () => {
-    //updateTimeDelivery();
+    updateTimeDelivery();
   }, 60000);
 
   const headerTable = [
