@@ -1,12 +1,13 @@
+import "./Modal.css";
 import { useState } from "react";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
-import { AlertBasic } from "../Alert/index.js";
-import "./Modal.css";
+import { AlertBasic, AlertBasicHtml } from "../Alert/index.js";
 import { getTimeDelivery } from "../../functionsUseful/getTimeDelivery.js";
 import { GetMaps } from "../../services/queryMaps.js";
 import { calculeTimeDelivery } from "../../functionsUseful/calculeTimeDelivery.js";
 import { ModuleSimple } from "../Fields/modules/moduleSimple.js";
 import { ModuleSelect } from "../Fields/modules/moduleSelect.js";
+import { modulesAdd } from "../../modules/modulesAdd.js";
 
 function Add(props) {
   const [data, setData] = useState({
@@ -27,23 +28,22 @@ function Add(props) {
   };
 
   const addOrder = async () => {
+    let obj = {};
     if (!checkedOriginAndDestination()) return;
     const response = await GetMaps(
       data.origin + "," + data.cidadeOrigin,
       data.destination + "," + data.cidadeDestination
     );
-    let time = 0;
     if (response.status === 200) {
-      time = response.data.routes[0].legs[0].duration.value;
+      obj = await buildObj(response.data.routes[0].legs[0]);
     } else {
-      AlertBasic(
+      AlertBasicHtml(
         "Atenção",
-        "Por favor, verifique o endereço da rota esta correto, não foi possível localizar.",
+        "Por favor, clique neste link: https://cors-anywhere.herokuapp.com/ para habitar o CORS temporário da aplicação.",
         "error"
       );
       return;
     }
-    const obj = await buildObj(time);
     if (!checkInput(obj)) return;
     props.funcUpdate(obj);
     clear();
@@ -72,7 +72,9 @@ function Add(props) {
     return true;
   };
 
-  const buildObj = (time) => {
+  const buildObj = (route) => {
+    const time = route.duration.value;
+    const distance = route.distance.text;
     const { requestOrder, deliveryOrder } = getTimeDelivery(time);
     const id = lastId > 0 ? lastId + 1 : 1;
     setLastId(id);
@@ -85,6 +87,7 @@ function Add(props) {
       requestOrder: requestOrder,
       deliveryOrder: deliveryOrder,
       deliveryTime: calculeTimeDelivery(deliveryOrder),
+      distance: distance,
       status: "Em Andamento",
     };
   };
@@ -101,59 +104,14 @@ function Add(props) {
     return true;
   };
 
-  const modules = [
-    { id: 1, type: "text", label: "Nome", name: "name", dropDown: false },
-    {
-      id: 2,
-      type: "text",
-      label: "Descrição",
-      name: "description",
-      dropDown: true,
-      options: [
-        { id: 1, name: "Selecione...", value: "" },
-        { id: 2, name: "Humburger", value: "Humburger" },
-        { id: 3, name: "Hamburger Duplo", value: "Hamburger Duplo" },
-        { id: 4, name: "Hamburger Acebolado", value: "Hamburger Acebolado" },
-        { id: 5, name: "Hamburger com Batata", value: "Hamburger com Batata" },
-      ],
-    },
-    {
-      id: 3,
-      type: "text",
-      label: "Logradouro (origem)",
-      name: "origin",
-      dropDown: false,
-    },
-    {
-      id: 4,
-      type: "text",
-      label: "Cidade (origem)",
-      name: "cidadeOrigin",
-      dropDown: false,
-    },
-    {
-      id: 5,
-      type: "text",
-      label: "Logradouro (destino)",
-      name: "destination",
-      dropDown: false,
-    },
-    {
-      id: 6,
-      type: "text",
-      label: "Cidade (destino)",
-      name: "cidadeDestination",
-      dropDown: false,
-    },
-  ];
-
+  
   return (
     <Modal isOpen={props.visible}>
       <ModalHeader className="modalHeader"> Incluir Pedido </ModalHeader>
       <ModalBody>
         <div className="form-group">
           <div className="row">
-            {modules.map((item) =>
+            {modulesAdd.map((item) =>
               item.dropDown === false ? (
                 <ModuleSimple
                   key={item.id}

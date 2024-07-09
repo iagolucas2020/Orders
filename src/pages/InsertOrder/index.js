@@ -11,7 +11,7 @@ import { Card } from "../../components/Card/card";
 function InsertOrder() {
   const [data, setData] = useState([]);
   const [visibleModal, setVisibleModal] = useState(false);
-  const [seeFormList, setSeeFormList] = useState(true);
+  const [seeFormList, setSeeFormList] = useState(false);
 
   const openModal = () => {
     setVisibleModal(!visibleModal);
@@ -84,19 +84,6 @@ function InsertOrder() {
     updateTimeDelivery();
   }, 30000);
 
-  const headerTable = [
-    "Id",
-    "Nome",
-    "Descrição",
-    "Origem",
-    "Destino",
-    "Hora Pedido",
-    "Hora Entrega Pedido",
-    "Tempo Entrega (estimado)",
-    "Status",
-    "Ação",
-  ];
-
   return (
     <>
       <div className="container-sm container divContainer">
@@ -138,7 +125,6 @@ function InsertOrder() {
         </div>
         {seeFormList ? (
           <Table
-            headerTable={headerTable}
             arrayObj={data}
             cancelOrder={cancelOrder}
             finishOrder={finishOrder}

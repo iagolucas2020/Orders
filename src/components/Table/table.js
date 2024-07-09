@@ -1,8 +1,9 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { FcCancel } from "react-icons/fc";
 import { IoIosSend } from "react-icons/io";
+import { headerTable } from "../../modules/headerTable";
 
-export const Table = ({ headerTable, arrayObj, cancelOrder, finishOrder }) => {
+export const Table = ({ arrayObj, cancelOrder, finishOrder }) => {
   return (
     <>
       <table className="table table-bordered table-striped table-hover">
@@ -24,10 +25,11 @@ export const Table = ({ headerTable, arrayObj, cancelOrder, finishOrder }) => {
               <td>{obj.requestOrder}</td>
               <td>{obj.deliveryOrder}</td>
               <td>{obj.deliveryTime}</td>
+              <td>{obj.distance}</td>
               <td>{obj.status}</td>
               <td>
                 {obj.status !== "Cancelado" && obj.status !== "Entregue" && (
-                  <>
+                  <div style={{display:'flex'}}>
                     <button
                       title="Cancelar Pedido"
                       className="btn"
@@ -47,7 +49,7 @@ export const Table = ({ headerTable, arrayObj, cancelOrder, finishOrder }) => {
                     >
                       <IoIosSend />
                     </button>
-                  </>
+                  </div>
                 )}
               </td>
             </tr>

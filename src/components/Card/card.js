@@ -13,12 +13,13 @@ export const Card = ({ arrayObj, cancelOrder, finishOrder }) => {
                     {obj.id}: {obj.name}
                   </h5>
                   <h6 class="card-subtitle mb-2 text-muted">
-                    {obj.description}: {obj.status}
+                    {obj.description}: <strong style={{color:'red'}}>{obj.status}</strong>
                   </h6>
                   <p class="card-text">
-                    O lanche será entregue em até {obj.deliveryTime}.
+                    O lanche será entregue em até <strong>{obj.deliveryTime}</strong>.
                   </p>
-                  <p>Destino: {obj.destination}</p>
+                  <p><strong>Destino: </strong>{obj.destination}</p>
+                  <p><strong>Distância: </strong>{obj.distance}</p>
                   {obj.status !== "Cancelado" && obj.status !== "Entregue" && (
                     <>
                       <div className="divButtonCard">

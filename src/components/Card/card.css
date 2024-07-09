@@ -1,6 +1,7 @@
 .divButtonCard {
     display: flex;
-    justify-content: end;
+    justify-content: center;
+    border-radius: 5px;
 }
 
 .divButtonCard button {

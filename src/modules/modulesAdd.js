@@ -1,0 +1,45 @@
+export const modulesAdd = [
+    { id: 1, type: "text", label: "Nome", name: "name", dropDown: false },
+    {
+      id: 2,
+      type: "text",
+      label: "Descrição",
+      name: "description",
+      dropDown: true,
+      options: [
+        { id: 1, name: "Selecione...", value: "" },
+        { id: 2, name: "Humburger", value: "Humburger" },
+        { id: 3, name: "Hamburger Duplo", value: "Hamburger Duplo" },
+        { id: 4, name: "Hamburger Acebolado", value: "Hamburger Acebolado" },
+        { id: 5, name: "Hamburger com Batata", value: "Hamburger com Batata" },
+      ],
+    },
+    {
+      id: 3,
+      type: "text",
+      label: "Logradouro (origem)",
+      name: "origin",
+      dropDown: false,
+    },
+    {
+      id: 4,
+      type: "text",
+      label: "Cidade (origem)",
+      name: "cidadeOrigin",
+      dropDown: false,
+    },
+    {
+      id: 5,
+      type: "text",
+      label: "Logradouro (destino)",
+      name: "destination",
+      dropDown: false,
+    },
+    {
+      id: 6,
+      type: "text",
+      label: "Cidade (destino)",
+      name: "cidadeDestination",
+      dropDown: false,
+    },
+  ];
